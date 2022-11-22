@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Perceptron():
-    def __init__(self, X, n_iter = 200, alpha = 0.1):
+    def __init__(self, X, n_iter = 10000, alpha = 0.01):
         self.alpha = alpha
         self.n_iter = n_iter
         self.X_train = X
@@ -29,7 +29,8 @@ class Perceptron():
         return A 
         
     def loss(self, A,y):
-        return (-1/len(y))* np.sum(y*np.log(A)+(1-y)*np.log(1-A))
+        epsilon = 1e-15
+        return (-1/len(y))* np.sum(y*np.log(A + epsilon)+(1-y)*np.log(1-A + epsilon))
     
     def gradients(self, A, y):
         dw = (1/len(y)) * np.dot(self.X_train.T, A-y)

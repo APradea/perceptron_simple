@@ -11,7 +11,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from perceptron import Perceptron
 from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import scale
 
 def load_data():
     train_dataset = h5py.File('datasets/trainset.hdf5', "r")
@@ -48,14 +47,12 @@ for i in range(1, 11):
     plt.tight_layout()
 plt.show()
 
-X_train=X_train.reshape((X_train.shape[0]),-1)
-X_train = scale(X_train)
-X_test=X_test.reshape((X_test.shape[0]),-1)
-X_test = scale(X_test)
+#MinMax std Xstd = X - min / max - min, here max = 255 & min = 0
+X_train_resh = X_train.reshape((X_train.shape[0]),-1) / X_train.max()
+X_test_resh = X_test.reshape((X_test.shape[0]),-1) / X_test.max()
 
-
-p= Perceptron(X_train)
-p.fit(y_train)
-pred = p.predict(X_test)
+p = Perceptron(X_train_resh, X_test_resh, y_train, y_test)
+p.fit()
+pred = p.predict(X_test_resh)
 
 print(accuracy_score(y_test, pred))

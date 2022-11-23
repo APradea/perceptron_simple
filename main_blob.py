@@ -37,8 +37,8 @@ y_test = y[75:]
 
 
 #Training 
-p = Perceptron(X_train)
-p.fit(y_train)
+p = Perceptron(X_train, X_test, y_train, y_test)
+hist=p.fit(y_train)
 pred = p.predict(X_test)
 w,b=p.w,p.b
 
@@ -54,4 +54,36 @@ plt.scatter(fleur[0],fleur[1],color='r')
 droite = -(w[0]*x0 + b)/w[1]
 plt.plot(x0, droite)
 plt.show()
+
+lim = 10
+h = 100
+W1 = np.linspace(-lim, lim, h)
+W2 = np.linspace(-lim, lim, h)
+
+W11,W22 = np.meshgrid(W1,W2)
+
+W_final = np.c_[W11.ravel(), W22.ravel()].T
+
+b= 0 
+Z = X.dot(W_final) + b
+A = 1/(1+np.exp(-Z))
+
+epsilon = 1e-15
+L = (-1/len(y))* np.sum(y*np.log(A + epsilon)+(1-y)*np.log(1-A + epsilon), axis = 0).reshape(W11.shape)
+
+plt.figure(figsize=(12,4))
+plt.subplot(1,2,1)
+plt.contourf(W11, W22, L)
+plt.colorbar()
+
+plt.subplot(1,2,2)
+plt.contourf(W11, W22, L)
+plt.scatter(hist[:,0],hist[:,1], c = hist[:,2], marker = 'x', cmap = "magma")
+plt.colorbar()
+plt.show()
+
+
+
+
+
 
